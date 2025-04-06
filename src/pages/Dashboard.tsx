@@ -1,7 +1,7 @@
 
 import React from "react";
 import DashboardCard from "@/components/dashboard/DashboardCard";
-import { Mail, FileText, Calendar, Tool, Brain, LifeBuoy } from "lucide-react";
+import { Mail, FileText, Calendar, Wrench, Brain, LifeBuoy } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 const Dashboard: React.FC = () => {
@@ -38,7 +38,7 @@ const Dashboard: React.FC = () => {
       id: "demande",
       title: "Demande d'intervention",
       description: "Assistance aux utilisateurs de l'université",
-      icon: <Tool size={32} />,
+      icon: <Wrench size={32} />,
       link: "/demande",
       roles: ["student", "teacher", "admin"],
     },
