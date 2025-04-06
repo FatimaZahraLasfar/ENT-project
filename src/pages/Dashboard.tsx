@@ -1,7 +1,7 @@
 
 import React from "react";
 import DashboardCard from "@/components/dashboard/DashboardCard";
-import { Mail, FileText, Calendar, Wrench, Brain, LifeBuoy } from "lucide-react";
+import { Mail, FileText, Calendar, Wrench, Brain, MessageCircle } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 const Dashboard: React.FC = () => {
@@ -54,8 +54,8 @@ const Dashboard: React.FC = () => {
       id: "assistance",
       title: "Assistance ENT",
       description: "Faire aux questions sur votre Environnement Numérique de Travail",
-      icon: <LifeBuoy size={32} />,
-      link: "/assistance",
+      icon: <MessageCircle size={32} />,
+      link: "/messagerie",
       roles: ["student", "teacher", "admin"],
     },
   ];

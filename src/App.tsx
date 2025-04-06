@@ -11,6 +11,9 @@ import CoursPage from "./pages/CoursPage";
 import AdminPage from "./pages/AdminPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
+import MessageriePageButton from "./pages/MessageriePageButton";
+import MessagerieConversation from "./pages/MessagerieConversation";
+import MessageWidget from "./components/messaging/MessageWidget";
 
 const queryClient = new QueryClient();
 
@@ -25,9 +28,12 @@ const App = () => (
             <Route path="/" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
             <Route path="/cours" element={<DashboardLayout><CoursPage /></DashboardLayout>} />
             <Route path="/admin" element={<DashboardLayout><AdminPage /></DashboardLayout>} />
+            <Route path="/messagerie" element={<DashboardLayout><MessageriePageButton /></DashboardLayout>} />
+            <Route path="/messagerie/conversation" element={<DashboardLayout><MessagerieConversation /></DashboardLayout>} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <MessageWidget />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
