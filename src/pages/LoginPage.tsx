@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,31 +5,56 @@ import { Label } from "@/components/ui/label";
 import { useAuth, UserRole } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [role, setRole] = useState<UserRole>("student");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate(); // Initialize navigate
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!email || !name) {
-      toast.error("Veuillez remplir tous les champs");
-      return;
+  
+    try {
+      const response = await fetch("http://localhost:8000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: email,
+          password: password
+        }),
+      });
+  
+      const data = await response.json();
+      
+      if (response.ok) {
+        login({
+          id: data.email, // or any unique ID
+          name: data.name,
+          email: data.email,
+          role: data.role
+        }, data.access_token);
+        
+        // Redirect based on role
+        switch(data.role) {
+          case 'admin': navigate('/admin'); break;
+          case 'teacher': navigate('/'); break;
+          default: navigate('/');
+        }
+      } else {
+        toast.error(data.detail || "Login failed");
+      }
+    } catch (error) {
+      toast.error("Network error");
     }
-
-    login({
-      id: Math.random().toString(36).substring(2, 9),
-      name,
-      email,
-      role,
-    });
-
-    toast.success("Connexion réussie");
   };
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword); // Add this function for password visibility toggle
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -44,15 +68,6 @@ const LoginPage: React.FC = () => {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Nom complet</Label>
-              <Input
-                id="name"
-                placeholder="Entrez votre nom"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -62,18 +77,34 @@ const LoginPage: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="role">Rôle (pour démonstration)</Label>
-              <Select value={role} onValueChange={(value) => setRole(value as UserRole)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Sélectionnez votre rôle" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="student">Étudiant</SelectItem>
-                  <SelectItem value="teacher">Enseignant</SelectItem>
-                  <SelectItem value="admin">Administrateur</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="space-y-2 relative">
+              <Label htmlFor="password">Mot de passe</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Entrez votre mot de passe"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pr-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                  <span className="sr-only">
+                    {showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                  </span>
+                </Button>
+              </div>
             </div>
           </form>
         </CardContent>

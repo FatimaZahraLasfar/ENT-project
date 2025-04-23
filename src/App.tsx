@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import MessageriePageButton from "./pages/MessageriePageButton";
 import MessagerieConversation from "./pages/MessagerieConversation";
 import MessageWidget from "./components/messaging/MessageWidget";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,12 @@ const App = () => (
             <Route path="/messagerie/conversation" element={<DashboardLayout><MessagerieConversation /></DashboardLayout>} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="*" element={<NotFound />} />
+            <Route element={<ProtectedRoute allowedRoles={['admin', 'teacher', 'student']} />}>
+            <Route path="/StudentDashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>}  /></Route>
+            <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+            <Route path="/AdminDashboard" element={<AdminPage />} /></Route>
+            <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
+            <Route path="/TeacherDashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} /></Route>
           </Routes>
           <MessageWidget />
         </BrowserRouter>
