@@ -1,4 +1,4 @@
-# Welcome to your ENT project
+# Welcome to ENT project
 
 ## Project info
 
